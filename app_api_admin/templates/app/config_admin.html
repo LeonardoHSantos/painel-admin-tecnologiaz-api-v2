@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+    <div class="content">
+        <div class="content-msg-sucess-save">
+        </div>
+                
+        <div class="form-config-estrategias">
+            <div class="content-form">
+                <div class="block-user-form">
+                    <div class="block-login">
+                        <h1>Configurações</h1>
+                    </div>
+                    <div class="block-register">
+                        <!-- <input type="submit" value="Salvar" id="save-form-config" onclick="sendFormConfig();"> -->
+                        <input type="submit" value="Buscar" id="search-form-config" onclick="getConfigEstrategias(event);">
+                    </div> 
+                </div>
+                <form action="{% url 'config_admin_post' %}" id="form-config-admin">
+                    {% csrf_token %}
+                    <div class="inputs-forms" required>
+                        <label for="input-select-estrategia">Selecione uma estratégia</label>
+                        <select name="input-select-estrategia" id="input-select-estrategia" required onchange="checkedInputs_Form();">
+                            <option value="selecione_uma_estrategia">selecione uma estratégia</option>
+                            <option value="estrategia_1">estrategia 1</option>
+                            <option value="estrategia_2">estrategia 2</option>
+                            <option value="estrategia_3">estrategia 3</option>
+                            <option value="estrategia_4">estrategia 4</option>
+                        </select>
+                    </div>
+
+                    <div class="divisor-content"> 
+                    </div>
+
+                    <div class="inputs-forms" required>
+                        <label for="input-select-paridade">Selecione as paridades</label>
+                        <select name="input-select-paridade" id="input-select-paridade" onchange="checkedInputs_Form();">
+                            <option value="selecione_uma_paridade">selecione uma paridade</option>
+                            {% for active in list_actives %}
+                                <option value="{{ active }}">{{ active }}</option>
+                            {% endfor %}
+                        </select>
+                        
+                    </div>
+
+                    <div class="divisor-content"> 
+                    </div>
+
+                    <div class="inputs-forms">
+                        <label for="">Controles de Suporte e Resistência</label>
+                        <div class="content-label">
+                            <label for="input-sup-res-m15">M15</label>
+                            <input type="number" min="0" max="100" name="input-sup-res-m15" id="input-sup-res-m15" required onchange="checkedInputs_Form_SUP_RES();">
+                        </div>
+                        <div>
+                            <label for="input-sup-res-1h">1H</label>
+                            <input type="number" min="0" max="100" name="input-sup-res-1h" id="input-sup-res-1h" required onchange="checkedInputs_Form_SUP_RES();">
+                        </div>
+                        <div>
+                            <label for="input-sup-res-4h">4H</label>
+                            <input type="number" min="0" max="100" name="input-sup-res-4h" id="input-sup-res-4h" required onchange="checkedInputs_Form_SUP_RES();">
+                        </div>
+                    </div>
+
+                    <div class="divisor-content"> 
+                    </div>
+                    <div class="content-status-estrategia">
+                        <label for="input-status-estrategia">Qtd Candles M5</label>
+                        <!-- <input type="checkbox" name="input-status-estrategia" id="input-status-estrategia" onclick="alter_status_estrategia();"> -->
+                        <input id="input-qtd-candles-estrategia" type="number" required onchange="checkedInputs_Form_SUP_RES();">
+                    </div>
+                </form>
+                <div class="container-btn-save-config-admin">
+                    <input type="submit" value="Salvar" id="save-form-config" onclick="sendFormConfig();">
+                </div>
+            </div>
+            <div class="table-results-base">
+                <div>
+                    <p>Últimos resultados</p>
+                </div>
+                <table class="table-results-resume">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Horário</th>
+                            <th>Direção</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tabela-operacoes">
+        <h3>TABELA DE OPERAÇÕES - referência para as configurações das estratégias</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>estratégia</th>
+                    <th>quantidade de candles</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>estratégia M5 - padrão 1</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>estratégia M5 - padrão 2</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>estratégia M5 - padrão 3</td>
+                    <td>12</td>
+                </tr>
+                <tr>
+                    <td>estratégia M5 - padrão 4</td>
+                    <td>7</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="instrucoes-start-stop-api">
+        <div class="content-instrucoes">
+            <p> 1 - Para <span class="destaque-intrucao"> configurar as operações </span> da api é necessário filtrar a <span class="destaque-intrucao"> estratégia </span> e a <span class="destaque-intrucao"> paridade </span> desejada.</p>
+            <p> 2 - Após a seleção da estratégia e paridade, é liberado a função <span class="destaque-intrucao"> BUSCAR</span> no canto <span class="destaque-intrucao"> superior </span> do formulário. Clique para buscar as configurações.
+            <p> 3 - Em seguida é retornado as configurações da API para a paridade e estratégia filtrada.</p>
+            <p> 4 - Para <span class="destaque-intrucao"> DESATIVAR </span> as operações da paridade e estratégia filtrada basta informar no campo <span class="destaque-intrucao"> Qtd Candles M5 </span> a quantidade <span class="destaque-intrucao"> ZERO</span>.</p>
+            <p> 5 - Para <span class="destaque-intrucao"> ATIVAR </span> as operações da paridade e estratégia filtrada basta informar no campo <span class="destaque-intrucao"> Qtd Candles M5 </span> a quantidade prevista na tabela <span class="destaque-intrucao"> "TABELA DE OPERAÇÕES" </span>.</p>
+            <p> 6 - Após qualquer alteração no formulário de configuração, é habilitado o botão <span class="destaque-intrucao"> SALVAR </span>.</p>
+            <p> 7 - Lembre de seguir a tabela <span class="destaque-intrucao"> "TABELA DE OPERAÇÕES" </span> para garantir o funcionamento correto da API.</p>
+            <img src="{% static 'config-estrategias.gif' %}" alt="">
+        </div>
+    </div>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script>
+        
+        function controlStatusAPI(event){
+            controlAPI(event, '{% url "start_api" %}', '{% url "stop_api" %}')
+        }
+        function getConfigEstrategias() {
+            GetConfigAdmin("{% url 'config_admin_get' %}");
+        }
+        function sendFormConfig() {
+            sendFormConfigAdmin("{% url 'config_admin_post' %}");
+        }
+    </script>
+{% endblock %}

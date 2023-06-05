@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="content">
+        <div class="form-login">
+
+            {% if user.is_authenticated %}
+                <div>
+                    <div class="content-form-home">
+                        <div class="container-filtros-principal">
+                            <form action="" id="form-filtros-principal">
+                                <div class="block-filtros-datas">
+                                    <div class="contents-filtros-datas">
+                                        <label for="input-data-inicial">Data inicial</label>
+                                        <input type="date" name="input-data-inicial" id="input-data-inicial">
+                                    </div>
+                                    <div class="contents-filtros-datas">
+                                        <label for="input-data-final">Data Final</label>
+                                        <input type="date" name="input-data-final" id="input-data-final">
+                                    </div>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-mercado">Mercado</label>
+                                    <select name="input-mercado" id="input-mercado">
+                                        <option value="todos">todos</option>
+                                        <option value="aberto">aberto</option>
+                                        <option value="otc">otc</option>
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-ativo">Ativo</label>
+                                    <select name="input-ativo" id="input-ativo">
+                                        <option value="todos">todos</option>
+                                        {% for active in list_actives %}
+                                            <option value="{{ active }}">{{ active }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-direcao">Direção</label>
+                                    <select name="input-direcao" id="input-direcao">
+                                        <option value="todos">todos</option>
+                                        <option value="call">call</option>
+                                        <option value="put">put</option>
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-resultado">Resultado</label>
+                                    <select name="input-resultado" id="input-resultado">
+                                        <option value="todos">todos</option>
+                                        <option value="win">win</option>
+                                        <option value="loss">loss</option>
+                                        <option value="empate">empate</option>
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-resultado">Padrão</label>
+                                    <select name="input-estrategia" id="input-estrategia">
+                                        <option value="todos">todos</option>
+                                        {% for padrao in list_padroes %}
+                                            <option value="{{ padrao }}">{{ padrao }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <label for="input-resultado">Alerta</label>
+                                    <select name="input-alerta" id="input-alerta">
+                                        <option value="todos">todos</option>
+                                        {% for alerta in list_alertas %}
+                                            <option value="{{ alerta }}">{{ alerta }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <input type="button" id="btn-aplicar-filtros-principal" value="Filtrar" onclick="aplicar_filtros_principal();">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="block-resultados-resumo">
+                            <div class="card-results">
+                                <span class="content-card-consolidado">
+                                    <p>Registros</p>
+                                    <p class="content-card-results-consolidado"></p>
+                                </span>
+                            </div>
+                            <div class="card-results-win">
+                                <span class="content-card-consolidado">
+                                    <p>win</p>
+                                    <p class="content-card-results-consolidado-win"></p>
+                                </span>
+                            </div>
+                            <div class="card-results-loss">
+                                <span class="content-card-consolidado">
+                                    <p>loss</p>
+                                    <p class="content-card-results-consolidado-loss"></p>
+                                </span>
+                            </div>
+                            <div class="card-results">
+                                <span class="card-result-geral">
+                                    <p class="card-result-geral-direction result-win-geral">Call</p>
+                                    <p class="card-result-geral-direction-result-call"></p>
+                                </span>
+                                <div>
+                                    <span class="card-result-extrato">
+                                        <p>Win</p>
+                                        <p class="card-result-extrato-win-call"></p>
+                                    </span>
+                                    <span class="card-result-extrato">
+                                        <p>Loss</p>
+                                        <p class="card-result-extrato-loss-call"></p>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-results">
+                                <span class="card-result-geral">
+                                    <p class="card-result-geral-direction result-loss-geral">Put</p>
+                                    <p class="card-result-geral-direction-result-put"></p>
+                                </span>
+                                <div>
+                                    <span class="card-result-extrato">
+                                        <p>Win</p>
+                                        <p class="card-result-extrato-win-put"></p>
+                                    </span>
+                                    <span class="card-result-extrato">
+                                        <p>Loss</p>
+                                        <p class="card-result-extrato-loss-put"></p>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="table-results-base-geral">
+                            <table class="table-results-resume">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>expiração</th>
+                                        <th>padrão</th>
+                                        <th>alerta</th>
+                                        <th>mercado</th>
+                                        <th>ativo</th>
+                                        <th>direção</th>
+                                        <th>resultado</th>
+                                        <th>sup M15</th>
+                                        <th>sup 1H</th>
+                                        <th>sup 4H</th>
+                                        <th>res M15</th>
+                                        <th>res 1H</th>
+                                        <th>res 4H</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="{% static 'scriptDashboard.js' %}"></script>
+                
+                <script>
+                    function aplicar_filtros_principal() {
+                        getDataDashboardPrincipal("{% url 'query_results_operations_get_data_dashboard' %}");
+                    }
+                    getDataDashboardPrincipal("{% url 'query_results_operations_get_data_dashboard' %}");
+                </script>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

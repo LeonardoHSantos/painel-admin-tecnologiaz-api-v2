@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'styles_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'intrucoes.css' %}">
+    <link rel="stylesheet" href="{% static 'tables.css' %}">
+    <link rel="stylesheet" href="{% static 'graficos.css' %}">
+    <link rel="stylesheet" href="{% static 'dashboards.css' %}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+</head>
+<body>
+
+    {% include 'snippets/navbar.html' %}
+    {% block content %}{% endblock %}
+    {% include 'snippets/footer.html' %}
+    
+    <script src="{% static 'script_links.js' %}"></script>
+</body>
+</html>

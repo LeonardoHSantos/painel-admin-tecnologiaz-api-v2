@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+{% block title %}Pré-Análise{% endblock %}
+{% load static %}
+{% block content %}
+    <div class="content">
+        <div class="form-login">
+
+            {% if user.is_authenticated %}
+                <div class="container-table">
+                    <!-- ------------------ filtos ------------------  -->
+                    <div>
+                        <div class="block-filtros-datas inputs-filters-pre-analise">
+                            <div class="hide-block-filter" onclick="hide_filter_block();">
+                                <p>fechar</p>
+                            </div>
+                            <!--  -->
+                            <div class="contents-filtros-datas">
+                                <label for="input-data-inicial">Data inicial</label>
+                                <input type="date" name="input-data-inicial-filtro" id="input-data-inicial-filtro">
+                            </div>
+                            <!--  -->
+                            <div class="contents-filtros-datas">
+                                <label for="input-data-final">Data Final</label>
+                                <input type="date" name="input-data-final-filtro" id="input-data-final-filtro">
+                            </div>
+                            <!--  -->
+                            <div>
+                                <div class="contents-filtros-geral-filtros">
+                                    <label for="input-direcao">Direção</label>
+                                    <select name="input-direcao" id="input-direcao">
+                                        <option value="todos">todos</option>
+                                        <option value="call_put">call e put</option>
+                                        <option value="call">call</option>
+                                        <option value="put">put</option>
+                                    </select>
+                                </div>
+                                <div class="contents-filtros-geral-filtros">
+                                    <label for="input-resultado">Resultado</label>
+                                    <select name="input-resultado" id="input-resultado">
+                                        <option value="todos">todos</option>
+                                        <option value="win_loss">win e loss</option>
+                                        <option value="win">win</option>
+                                        <option value="loss">loss</option>
+                                        <option value="empate">empate</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- ---------- notificações -- erro de preenchimento de formulário ---------------------- -->
+                            <div class="notification-error-filters">
+                                <p class="error-inputs-date-valid">
+                                    1 - Os campos de datas são obrigatórios;<br>
+                                    2 - A data inicial deve ser menor ou igual que a data final.
+                                </p>
+                            </div>
+                            <!--  -->
+                            <div class="block-btn-filtros-2">
+                                <input type="button" id="btn-filtrar-pre-analise" value="Aplicar Filtros" onclick="execFiltros();">
+                                <div class="animation-btn-process">
+                                    <p>Processando dados...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ----------------------------- form auth user -->
+                    <div>
+                        <div class="block-auth-user inputs-auth-user">
+                            <div class="hide-block-filter" onclick="hide_block_auth_user();">
+                                <p>fechar</p>
+                            </div>
+                            <!--  -->
+                            <div class="contents-filtros-auth">
+                                <label for="input-email-broker">Email (IQ Option)</label>
+                                <input type="email" name="input-email-broker" id="input-email-broker">
+                            </div>
+                            <!--  -->
+                            <div class="contents-filtros-auth">
+                                <label for="input-password-broker">Senha (IQ Option)</label>
+                                <input type="password" name="input-password-broker" id="input-password-broker">
+                            </div>
+                            <!--  -->
+                            <div class="contents-filtros-auth">
+                                <label for="input-token-painel">Token (Painel)</label>
+                                <input type="text" name="input-token-painel" id="input-token-painel">
+                            </div>
+                            <!--  -->
+                    </div>
+                    
+                    <!-- -------------------- -->
+                    <div class="animation-process-pre-analise">
+                        <h1>Processando dados</h1>
+                    </div>
+                    <!-- -------------------- -->
+                    <div class="notification-error-filters-process">
+                        <p class="error-inputs-date-process-valid">
+                            1 - verifique se as datas estão preenchidas corretamente;<br><br>
+                            2 - a data inicial deve ser maior ou igual a data final;<br><br>
+                            3 - selecione uma paridade;<br><br>
+                            4 - selecione uma estratégia.
+                        </p>
+                        <input type="button" id="btn-hide-notification-error" value="Fechar" onclick="hideModalNotificationError();">
+                    </div>
+                    <!-- -------------------- -->
+                    <div class="notification-error-filters-process-auth">
+                        <p class="error-inputs-date-process-valid-auth">
+                            1 - verifique se todos os campos no formulário de autenticação estão preenchidos corretamente;<br><br>
+                            2 - utilize uma conta da IQ Option diferente dos processos da API de Sinais;<br><br>
+                            3 - verique se seu token é válido;
+                        </p>
+                        <input type="button" id="btn-hide-notification-error" value="Fechar" onclick="hideModalAuth();">
+                    </div>
+                    <!-- -------- content pre analise --------  -->
+                    <div class="content-form-home container-analise">
+                        
+                        <div class="container-filtros-principal container-analise">
+                            <form action="" id="form-filtros-principal">
+                                {% csrf_token %}
+                                <div class="block-filtros-datas">
+                                    <div class="contents-filtros-datas">
+                                        <label for="input-data-inicial">Data inicial</label>
+                                        <input type="date" name="input-data-inicial" id="input-data-inicial">
+                                    </div>
+                                    <div class="contents-filtros-datas">
+                                        <label for="input-data-final">Data Final</label>
+                                        <input type="date" name="input-data-final" id="input-data-final">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="contents-filtros-geral-filtros">
+                                        <label for="input-ativo">Ativo</label>
+                                        <select name="input-ativo" id="input-ativo"  onchange="updateList(event)">
+                                            <option value="todos" id="all-actives">add paridades...</option>
+                                            {% for active in list_actives %}
+                                                <option id="option-{{ active }}">{{ active }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="contents-filtros-geral-filtros">
+                                        <label for="input-resultado">Padrão</label>
+                                        <select name="input-estrategia" id="input-estrategia">
+                                            <option value="estrategia_1">PADRAO-M5-V1</option>
+                                            <option value="estrategia_2">PADRAO-M5-V2</option>
+                                            <option value="estrategia_3">PADRAO-M5-V3</option>
+                                            <option value="estrategia_4">PADRAO-M5-V4</option>
+                                            <option value="estrategia_5">PADRAO-M5-V5</option>
+                                            <option value="estrategia_6">PADRAO-M5-V6</option>
+                                            <option value="estrategia_7">PADRAO-M5-V7</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="contents-filtros-geral">
+                                    <div class="inputs-sup-res">
+                                        <label for="sup-res-m15">M15</label>
+                                        <input type="number" id="sup-res-m15" min="0" max="99">
+                                    </div>
+                                    <div class="inputs-sup-res">
+                                        <label for="sup-res-1h">1H</label>
+                                        <input type="number" id="sup-res-1h" min="0" max="99">
+                                    </div>
+                                    <div class="inputs-sup-res">
+                                        <label for="sup-res-4h">4H</label>
+                                        <input type="number" id="sup-res-4h" min="0" max="99">
+                                    </div>
+                                </div>                               
+                                
+                                <div class="block-btn-filtros">
+                                    <input type="button" id="btn-gerar-pre-analise" value="Gerar Pré-Análise" onclick="get_data();">
+                                    <div style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                                        <!-- <i class="fa-solid fa-filter"></i> -->
+                                        <input type="button" id="btn-show-filtros" value="Filtros" onclick="show_block_filters();">
+                                    </div>
+                                </div>
+
+                                <!-- ---------------- -->
+                                <div class="block-btn-auth" onclick="show_block_auth_user();">
+                                    
+                                    <i class="fa-solid fa-gears"></i>
+                                    
+                                </div>
+
+                                
+                            </form>
+                            <div>
+                                <p style="font-weight: 600;">Paridades para analisar: </p>
+                                <div class="block-actives-to-analyze">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="block-resultados-resumo container-analise">
+                            <div class="card-results">
+                                <span class="content-card-consolidado">
+                                    <p>Registros</p>
+                                    <p class="content-card-tt-results"></p>
+                                </span>
+                            </div>
+                            <div class="card-results">
+                                <span class="content-card-consolidado">
+                                    <p>Confluências</p>
+                                    <p class="content-card-results-consolidado"></p>
+                                </span>
+                            </div>
+                            <div class="card-results-win">
+                                <span class="content-card-consolidado">
+                                    <p>win</p>
+                                    <p class="content-card-results-consolidado-win"></p>
+                                </span>
+                            </div>
+                            <div class="card-results-loss">
+                                <span class="content-card-consolidado">
+                                    <p>loss</p>
+                                    <p class="content-card-results-consolidado-loss"></p>
+                                </span>
+                            </div>
+                        </div>
+                        
+
+                        <!-- dashboard em desenvolvimento -->
+                        <!-- <div class="content">
+                            <div class="container-dashboard">
+                                <div style="width: 800px;">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                                <div>
+                                    <canvas id="myChart-2"></canvas>
+                                </div>                                
+                            </div>
+                        </div> -->
+                        
+                        <div class="table-results-base-geral container-analise">
+                            <table class="table-results-resume container-analise">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>expiração</th>
+                                        <th>estrategia</th>
+                                        <th>ativo</th>
+                                        <th>fechamento</th>
+                                        <th>direção</th>
+                                        <th>resultado</th>
+                                        <th>res_15m</th>
+                                        <th>res_1h</th>
+                                        <th>res_4h</th>
+                                        <th>sup_15m</th>
+                                        <th>sup_1h</th>
+                                        <th>sup_4h</th>
+                                    </tr>
+                                </thead>
+                                <tr class="observer-data-1">
+                                    
+                                </tr>
+
+                                <tbody>
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <div class="block-pagination-pre-analise">
+                            <p>Paginas</p>
+                            
+                            <ul>
+                                <li style="font-weight: 600;">1</li>
+                                <li>2</li>
+                                <li>3</li>
+                                <li>4</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                
+            {% endif %}
+        </div>
+    </div>
+    <!-- <div>
+        <input type="button" value="teste insersect" id="process-teste" onclick="createInterSectionElements()">
+    </div> -->
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'dashboards.js' %}"></script>
+    <!-- ------------------------------------------------------------ -->
+    <script src="{% static 'pre_analisys.js' %}"></script>
+    <script>
+        function get_data(){
+            get_data_pre_analise("{% url 'get_data_pre_estrategia' %}");
+        }     
+    </script>
+{% endblock %}
