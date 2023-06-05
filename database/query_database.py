@@ -402,7 +402,7 @@ def update_status_api(status_api, email):
                     status_api = {status_api},
                     email = "{email}"
                 WHERE
-                    id = 1;
+                    id = 2;
             """
             cursor.execute(comando_update)
             conn["conn"].commit()
