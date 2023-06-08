@@ -505,6 +505,7 @@ def update_database_sign(obj_sign):
             if tt_query >= 1:
                 try:
                     id_register = result_query[0][0]
+                    # direction = result_query[0][1]
 
                     comando_update = f"""
                     UPDATE {TABLE_NAME_OPERATIONS}
