@@ -88,7 +88,7 @@ class ProcessAPI:
             return _auth
     # --------------------
     def threading_process_api(self):
-        list_check_tm = []
+        list_check_tm = list()
         try:
             while True:
                 if self.control_bool_api == True:
@@ -103,14 +103,25 @@ class ProcessAPI:
                             print("#### TENTANDO SE RECONECTAR AO WEBSOCKET ####")
                             sleep(3)
                             self.start_api()
-                        
+                                                
                         elif list_check_tm.count(self.obj_wss.check_timestamp) < 4:
                             if _seconds >= 3 and _seconds <= 4:
                                 self.process_check_results_operations()
                             elif _seconds >= 12 and _seconds <= 13:
-                                self.process_operation(minutes=_minutes, type_process="process_comum")
+                                try:
+                                    self.process_operation(minutes=_minutes, type_process="process_comum")
+                                except Exception as e:
+                                    print(f"\n\n ### ERROR #1 PROCESS OPERATION API | ERROR: {e}")
                             elif _seconds >= 40 and _seconds <= 41:
-                                self.process_operation(minutes=_minutes, type_process="process_open_operation")
+                                try:
+                                    self.process_operation(minutes=_minutes, type_process="process_open_operation")
+                                except Exception as e:
+                                    print(f"\n\n ### ERROR #2 PROCESS OPERATION API | ERROR: {e}")
+                        # ----
+                        if len(list_check_tm) >= 30:
+                            print(f"CHECK LEN list_check_tm | TAM: {len(list_check_tm)}")
+                            list_check_tm = list()
+                            print(f"CLEAR list_check_tm | TAM: {len(list_check_tm)} | FINISH PROCESS CLEAR.")
                     except Exception as e:
                         print(e)
                 else:

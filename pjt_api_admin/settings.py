@@ -121,12 +121,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'base_statics/css'),
-    os.path.join(BASE_DIR, 'base_statics/img'),
-    os.path.join(BASE_DIR, 'base_statics/js'),
-    os.path.join(BASE_DIR, 'base_statics/icons'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'base_statics/css'),
+#     os.path.join(BASE_DIR, 'base_statics/img'),
+#     os.path.join(BASE_DIR, 'base_statics/js'),
+#     os.path.join(BASE_DIR, 'base_statics/icons'),
+# ]
 
 LOGIN_REDIRECT_URL = "config_admin"
 LOGOUT_REDIRECT_URL = "home"
