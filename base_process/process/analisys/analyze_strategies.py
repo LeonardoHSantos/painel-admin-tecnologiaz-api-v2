@@ -237,8 +237,8 @@ def prepare_signal_to_database(dataframe, direction, status_alert, padrao, versi
     else:
         mercado = "aberto"
 
-    list_tests = ["M5-V6", "M5-V7"] # "M5-V5"
-    if version in list_tests:
+    # list_tests = ["M5-V6", "M5-V7"]
+    if version ==  "M5-V6" or version ==  "M5-V7": # validação manual devido a erros de intepretação do código pela "list_tests".
         status_alert = f"{status_alert}-test"
 
     if version == "M5-V2":
