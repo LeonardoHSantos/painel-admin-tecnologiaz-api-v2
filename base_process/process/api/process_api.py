@@ -112,7 +112,7 @@ class ProcessAPI:
                                     self.process_operation(minutes=_minutes, type_process="process_comum")
                                 except Exception as e:
                                     print(f"\n\n ### ERROR #1 PROCESS OPERATION API | ERROR: {e}")
-                            elif _seconds >= 40 and _seconds <= 41:
+                            elif _seconds >= 35 and _seconds <= 36:
                                 try:
                                     self.process_operation(minutes=_minutes, type_process="process_open_operation")
                                 except Exception as e:
